@@ -1,0 +1,17 @@
+#!/usr/bin/env ruby
+
+require 'bundler'
+Bundler.require(:default)
+
+require 'prometheus_exporter/client'
+
+client = PrometheusExporter::Client.new(host: ENV.fetch('PROMETHEUS_EXPORTER_HOST'))
+PrometheusExporter::Client.default = client
+
+gauge = client.register(:gauge, 'some_value', 'state of value')
+
+while true do
+  value = rand(50)
+  gauge.observe(value)
+  sleep 5
+end
